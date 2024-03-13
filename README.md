@@ -16,7 +16,6 @@ Combining resources across OSF and GitHub should yield the following structure.
 
 ```
 ├── .gitignore          <- Lists files to be ignored in syncing between local and remote.
-├── LICENSE             <- Describes license to the contents of this repo.
 ├── README.md           <- Describes the project and orchestration (how to run)
 │
 ├── data
