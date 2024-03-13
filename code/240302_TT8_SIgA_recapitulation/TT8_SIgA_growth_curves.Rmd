@@ -1,0 +1,86 @@
+---
+title: "240302 Aerobic recapitualtion of SIgA-driven stationary cell death of TT8"
+author: "Morgan"
+date: "`r format(Sys.time(), '%a, %b %d, %Y')`"
+output:
+  prettydoc::html_pretty:
+    theme: architect
+    highlight: github
+---
+
+# Setup
+
+## Libraries
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(tidyr)
+```
+
+## Parameters
+
+```{r}
+# Source locations
+src_dirname <- "../../data/tidy/exp=membrane-permeabilization/"
+src_basename <- "2023-03-11.csv"
+
+# Destination locations
+dst_dirname <- "../../outputs/draft/exp=membrane-permeabilization/"
+```
+
+------------------------------------------------------------------------
+
+# Computation
+
+## File transformation
+
+```{r}
+# Read all csv files
+membrane_ <- read_csv(file.path(src_dirname, src_basename))
+
+# Generate copy of raw import
+membrane <- membrane_
+
+```
+
+------------------------------------------------------------------------
+
+## Chart1
+
+```{r}
+
+```
+
+------------------------------------------------------------------------
+
+# Dependencies
+
+```{r}
+# Clean up project of libraries not in use
+renv::clean()
+
+# Update lock file with new packages
+renv::snapshot()
+```
+
+------------------------------------------------------------------------
+
+# Documentation
+
+## Session info
+
+```{r}
+print(sessionInfo(), locale = FALSE)
+```
+
+## References
+
+```{r}
+(.packages()) %>%
+  sort() %>%
+  lapply(citation) %>%
+  lapply(c) %>%
+  unique()
+```
