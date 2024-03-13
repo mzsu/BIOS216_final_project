@@ -15,19 +15,23 @@ output:
 ```{r}
 library(dplyr)
 library(ggplot2)
+library(magrittr)
 library(readr)
 library(tidyr)
+library(readxl)
 ```
 
 ## Parameters
 
 ```{r}
 # Source locations
-src_dirname <- "../../data/tidy/exp=membrane-permeabilization/"
-src_basename <- "2023-03-11.csv"
+src_dir <- paste0("~/Documents/Stanford/Huang_lab_rotation/SIgA_cell_physiology/",
+                  "240302_aerobic_TT8_SIgA_recapitulate")
+
+raw_file <- "240228_TT8_SIgA_aerobic_recapitulation.xlsx"
 
 # Destination locations
-dst_dirname <- "../../outputs/draft/exp=membrane-permeabilization/"
+dst_dir <- "outputs"
 ```
 
 ------------------------------------------------------------------------
@@ -38,10 +42,11 @@ dst_dirname <- "../../outputs/draft/exp=membrane-permeabilization/"
 
 ```{r}
 # Read all csv files
-membrane_ <- read_csv(file.path(src_dirname, src_basename))
+gc_ <- read_excel(file.path(src_dir, raw_file))
 
-# Generate copy of raw import
-membrane <- membrane_
+# Generate object copy of raw import
+gc <- gc_
+gc
 
 ```
 
