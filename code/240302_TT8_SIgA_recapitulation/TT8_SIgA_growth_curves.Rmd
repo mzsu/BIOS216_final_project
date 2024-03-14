@@ -162,14 +162,27 @@ gc_300ugmL <- ggplot(final_gc, aes(x = Time)) +
 gc_0ugmL
 gc_30ugmL
 gc_300ugmL
-
 ```
 
 ## Outputs
 
 ```{r}
-ggsave("transformed_growth_curve_data.png", final_gc_table, path = dst_dir, device = "png")
+# Save all generated plots as png files in outputs
+ggsave("TT8_aerobic_SIgA_combined.png", 
+       plot = gc_combined_plot, path = dst_dir, 
+       width = 6, height = 4 , dpi = 300)
 
+ggsave("TT8_aerobic_0ugmL_SIgA.png", 
+       plot = gc_0ugmL, path = dst_dir, 
+       width = 6, height = 4 , dpi = 300)
+
+ggsave("TT8_aerobic_30ugmL_SIgA.png", 
+       plot = gc_30ugmL, path = dst_dir, 
+       width = 6, height = 4 , dpi = 300)
+
+ggsave("TT8_aerobic_300ugmL_SIgA.png", 
+       plot = gc_300ugmL, path = dst_dir, 
+       width = 6, height = 4 , dpi = 300)
 ```
 
 ------------------------------------------------------------------------
