@@ -19,6 +19,7 @@ library(magrittr)
 library(readr)
 library(tidyr)
 library(readxl)
+library(ggthemes)
 ```
 
 ## Parameters
@@ -62,25 +63,39 @@ head(gc)
 # Generate table of relevant values only
 relevant_gc <- gc %>%
   select(Time, D2:D11, E4:E9) %>%
-  mutate("0ugmL_SIgA" = rowMeans(select(., D3:D6))) %>%
-  mutate("30ugmL_SIgA" = rowMeans(select(., D7:D10))) %>%
-  mutate("300ugmL_SIgA" = rowMeans(select(., E5:E8))) %>%
-  mutate(blank = rowMeans(select(., D2, D11, E4, E9)))
+  mutate("0ugmL_SIgA" = rowMeans(select(., D3:D6)),
+         "30ugmL_SIgA" = rowMeans(select(., D7:D10)),
+         "300ugmL_SIgA" = rowMeans(select(., E5:E8)),
+         blank = rowMeans(select(., D2, D11, E4, E9)))
 
 # Blank all values
 for (col_name in names(relevant_gc)) {
   relevant_gc[[col_name]] <- relevant_gc[[col_name]] - relevant_gc$blank
 }
 
-# Calculate SD values for each class
-"0ugmL_SD" <- apply(gc[, c("D3", "D4", "D5", "D6")], 1, sd)
-"30ugmL_SD" <- apply(gc[, c("D7", "D8", "D9", "D10")], 1, sd)
-"300ugmL_SD" <- apply(gc[, c("D3", "D4", "D5", "D6")], 1, sd)
+# Calculate SD values for each class and add them as columns
+zero_ugmL_SD <- apply(gc[, c("D3", "D4", "D5", "D6")], 1, sd)
+thrty_ugmL_SD <- apply(gc[, c("D7", "D8", "D9", "D10")], 1, sd)
+thrhnd_ugmL_SD <- apply(gc[, c("D3", "D4", "D5", "D6")], 1, sd)
+relevant_gc_SD <- relevant_gc %>%
+  cbind(., "0ugmL_SD" = zero_ugmL_SD) %>%
+  cbind(., "30ugmL_SD" = thrty_ugmL_SD) %>%
+  cbind(., "300ugmL_SD" = thrhnd_ugmL_SD)
 
+# Add upper and lower bounds
+relevant_gc_SD <- relevant_gc_SD %>%
+  mutate("0_lower" = .data[["0ugmL_SIgA"]] - .data[["0ugmL_SD"]],
+         "0_upper" = .data[["0ugmL_SIgA"]] + .data[["0ugmL_SD"]],
+         "30_lower" = .data[["30ugmL_SIgA"]] - .data[["30ugmL_SD"]],
+         "30_upper" = .data[["30ugmL_SIgA"]] + .data[["30ugmL_SD"]],
+         "300_lower" = .data[["300ugmL_SIgA"]] - .data[["300ugmL_SD"]],
+         "300_upper" = .data[["300ugmL_SIgA"]] + .data[["300ugmL_SD"]])
 
 # Clean up final table
-stat_gc <- subset(relevant_gc, select = -c(D2:E9)) 
+final_gc <- relevant_gc_SD %>%
+  select(., -c(D2:E9, blank))
 
+final_gc
 ```
 
 ------------------------------------------------------------------------
@@ -88,7 +103,15 @@ stat_gc <- subset(relevant_gc, select = -c(D2:E9))
 ## Chart 1
 
 ```{r}
+# Generate growth curves of all conditions
+gc_plot <- ggplot(final_gc) + 
+  geom_line(aes(x = Time, y = .data[["0ugmL_SIgA"]], col = "0ugmL_SIgA")) + 
+  geom_line(aes(x = Time, y = .data[["30ugmL_SIgA"]], col = "30ugmL_SIgA")) + 
+  geom_line(aes(x = Time, y = .data[["300ugmL_SIgA"]], col = "300ugmL_SIgA")) + 
+  labs(x = "Time (min)", y = "OD", col = "Conditions") + 
+  theme_tufte()
 
+gc_plot
 ```
 
 ------------------------------------------------------------------------
