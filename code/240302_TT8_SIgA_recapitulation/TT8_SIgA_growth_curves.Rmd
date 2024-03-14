@@ -28,10 +28,11 @@ library(readxl)
 src_dir <- paste0("~/Documents/Stanford/Huang_lab_rotation/SIgA_cell_physiology/",
                   "240302_aerobic_TT8_SIgA_recapitulate")
 
-raw_file <- "240228_TT8_SIgA_aerobic_recapitulation.xlsx"
+raw_file <- "240228_TT8_SIgA_aerobic_recapitulation_raw.xlsx"
 
 # Destination locations
 dst_dir <- "outputs"
+
 ```
 
 ------------------------------------------------------------------------
@@ -44,15 +45,47 @@ dst_dir <- "outputs"
 # Read all csv files
 gc_ <- read_excel(file.path(src_dir, raw_file))
 
-# Generate object copy of raw import
-gc <- gc_
-gc
+# Convert all numerical values to doubles and save as a copy of the raw import
+gc <- gc_ %>%
+  as.data.frame(lapply(gc_, as.double))
+
+# Preview table
+head(gc)
 
 ```
 
 ------------------------------------------------------------------------
 
-## Chart1
+## Raw data manipulation
+
+```{r}
+# Generate table of relevant values only
+relevant_gc <- gc %>%
+  select(Time, D2:D11, E4:E9) %>%
+  mutate("0ugmL_SIgA" = rowMeans(select(., D3:D6))) %>%
+  mutate("30ugmL_SIgA" = rowMeans(select(., D7:D10))) %>%
+  mutate("300ugmL_SIgA" = rowMeans(select(., E5:E8))) %>%
+  mutate(blank = rowMeans(select(., D2, D11, E4, E9)))
+
+# Blank all values
+for (col_name in names(relevant_gc)) {
+  relevant_gc[[col_name]] <- relevant_gc[[col_name]] - relevant_gc$blank
+}
+
+# Calculate SD values for each class
+"0ugmL_SD" <- apply(gc[, c("D3", "D4", "D5", "D6")], 1, sd)
+"30ugmL_SD" <- apply(gc[, c("D7", "D8", "D9", "D10")], 1, sd)
+"300ugmL_SD" <- apply(gc[, c("D3", "D4", "D5", "D6")], 1, sd)
+
+
+# Clean up final table
+stat_gc <- subset(relevant_gc, select = -c(D2:E9)) 
+
+```
+
+------------------------------------------------------------------------
+
+## Chart 1
 
 ```{r}
 
