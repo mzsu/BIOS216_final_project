@@ -101,7 +101,7 @@ final_gc
 
 ------------------------------------------------------------------------
 
-## Chart 1
+## Combined growth curves
 
 ```{r}
 # Generate growth curves of all conditions
@@ -117,7 +117,11 @@ gc_combined_plot <- ggplot(final_gc, aes(x = Time)) +
         legend.position = "bottom")
 
 gc_combined_plot
+```
 
+## Singular growth curves with error envelopes
+
+```{r}
 # Generate separate envelope curves for each condition
 gc_0ugmL <- ggplot(final_gc, aes(x = Time)) + 
   geom_line(aes(y = .data$'0ugmL_SIgA'), col = "darkred") + 
@@ -157,6 +161,13 @@ gc_300ugmL <- ggplot(final_gc, aes(x = Time)) +
 gc_0ugmL
 gc_30ugmL
 gc_300ugmL
+
+```
+
+## Outputs
+
+```{r}
+ggsave("/path/to/your/directory/plot.png", plot = gc_30ugmL, width = 6, height = 4, dpi = 300)
 
 ```
 
