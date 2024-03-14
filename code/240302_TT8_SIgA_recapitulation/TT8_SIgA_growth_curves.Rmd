@@ -28,12 +28,12 @@ library(RColorBrewer)
 ```{r}
 # Source locations
 src_dir <- paste0("~/Documents/Stanford/Huang_lab_rotation/SIgA_cell_physiology/",
-                  "240302_aerobic_TT8_SIgA_recapitulate")
+                  "240302_aerobic_TT8_SIgA_recapitulate/")
 
 raw_file <- "240228_TT8_SIgA_aerobic_recapitulation_raw.xlsx"
 
 # Destination locations
-dst_dir <- "outputs"
+dst_dir <- "~/Documents/repositories/BIOS216_final_project/outputs/"
 ```
 
 ------------------------------------------------------------------------
@@ -83,18 +83,18 @@ relevant_gc_SD <- relevant_gc %>%
 
 # Add upper and lower bounds
 relevant_gc_SD <- relevant_gc_SD %>%
-  mutate("0_lower" = .data[["0ugmL_SIgA"]] - .data[["0ugmL_SD"]],
-         "0_upper" = .data[["0ugmL_SIgA"]] + .data[["0ugmL_SD"]],
-         "30_lower" = .data[["30ugmL_SIgA"]] - .data[["30ugmL_SD"]],
-         "30_upper" = .data[["30ugmL_SIgA"]] + .data[["30ugmL_SD"]],
-         "300_lower" = .data[["300ugmL_SIgA"]] - .data[["300ugmL_SD"]],
-         "300_upper" = .data[["300ugmL_SIgA"]] + .data[["300ugmL_SD"]])
+  mutate("0_lower" = .data$'0ugmL_SIgA' - .data$'0ugmL_SD',
+         "0_upper" = .data$'0ugmL_SIgA' + .data$'0ugmL_SD',
+         "30_lower" = .data$'30ugmL_SIgA' - .data$'30ugmL_SD',
+         "30_upper" = .data$'30ugmL_SIgA' + .data$'30ugmL_SD',
+         "300_lower" = .data$'300ugmL_SIgA' - .data$'300ugmL_SD',
+         "300_upper" = .data$'300ugmL_SIgA' + .data$'300ugmL_SD')
 
-# Clean up final tibble and convert to table object
+# Clean up final tibble and export to .csv object
 final_gc <- relevant_gc_SD %>%
   select(., -c(D2:E9, blank))
 
-final_gc_table <- knitr::kable(final_gc)
+write.csv(final_gc, paste0(dst_dir, "final_gc.csv"))
 
 # Preview tibble
 head(final_gc)
@@ -168,7 +168,7 @@ gc_300ugmL
 ## Outputs
 
 ```{r}
-ggsave(dst_dir, plot = gc_30ugmL, width = 6, height = 4, dpi = 300)
+ggsave("transformed_growth_curve_data.png", final_gc_table, path = dst_dir, device = "png")
 
 ```
 
