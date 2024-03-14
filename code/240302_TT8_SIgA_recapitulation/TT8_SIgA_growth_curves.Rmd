@@ -34,7 +34,6 @@ raw_file <- "240228_TT8_SIgA_aerobic_recapitulation_raw.xlsx"
 
 # Destination locations
 dst_dir <- "outputs"
-
 ```
 
 ------------------------------------------------------------------------
@@ -51,9 +50,8 @@ gc_ <- read_excel(file.path(src_dir, raw_file))
 gc <- gc_ %>%
   as.data.frame(lapply(gc_, as.double))
 
-# Preview table
+# Preview tibble
 head(gc)
-
 ```
 
 ------------------------------------------------------------------------
@@ -92,11 +90,14 @@ relevant_gc_SD <- relevant_gc_SD %>%
          "300_lower" = .data[["300ugmL_SIgA"]] - .data[["300ugmL_SD"]],
          "300_upper" = .data[["300ugmL_SIgA"]] + .data[["300ugmL_SD"]])
 
-# Clean up final table
+# Clean up final tibble and convert to table object
 final_gc <- relevant_gc_SD %>%
   select(., -c(D2:E9, blank))
 
-final_gc
+final_gc_table <- knitr::kable(final_gc)
+
+# Preview tibble
+head(final_gc)
 ```
 
 ------------------------------------------------------------------------
@@ -167,7 +168,7 @@ gc_300ugmL
 ## Outputs
 
 ```{r}
-ggsave("/path/to/your/directory/plot.png", plot = gc_30ugmL, width = 6, height = 4, dpi = 300)
+ggsave(dst_dir, plot = gc_30ugmL, width = 6, height = 4, dpi = 300)
 
 ```
 
